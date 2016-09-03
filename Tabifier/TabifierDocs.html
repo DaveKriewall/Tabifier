@@ -1,0 +1,210 @@
+    <h1><a name ="Tabifier"> Tabifier Plugin for IntelliJ IDEA</a></h1>
+    <p>
+    The tabifier plugin retabs Java code so that syntactic elements are aligned vertically.
+        Extensive control over <a href="#Controlling_Alignment">alignment</a> is provided.
+    <p>
+    For example, I like to align variable declarations and assignment statements like this:
+<pre><code>                   int v1; // loop variable
+                   String       s2;                  // second string
+    public  static PrintWriter  p;
+    private static boolean      debugging    = true; // initialize
+    private static OutputStream outputstream = null;
+
+    outputstream = new FileOutputStream(f, true);
+    p            = new DebuggingPrintWriter(outputstream, true);
+</code></pre>
+    <p>
+    IDEA likes to format them with single spaces, like this:
+<pre><tt>    int v1; // loop variable
+    String s2; // second string
+    public static PrintWriter p;
+    private static boolean debugging = true; // initialize
+    private static OutputStream outputstream = null;
+
+    outputstream = new FileOutputStream(f, true);
+    p = new DebuggingPrintWriter(outputstream, true);
+</tt></pre>
+    <p>
+    The tabifier plugin automatically reformats the text into the first version, or any of several configurable variations.
+    <p>
+    The newest version has many bug fixes and other improvements.  It does a much better job at handling nested expressions and method calls.
+        It also has several new features, such as the ability to right justify integer literals, e.g.
+<pre><tt>
+    public static final int ONE    =  1;
+    public static final int TWO    =  2;
+    public static final int TEN    = 10;
+    public static final int ELEVEN = 11;
+</tt></pre>
+    It can align method declaration and method call parameters, even with multiple parameters per line:
+<pre><tt>
+    public ExpressionListParser(TokenColumn       openParend,
+                                ColumnChoice      params,
+                                TokenColumn       closeParend,
+                                CodeStyleSettings codeStyleSettings, TabifierSettings settings,
+                                NestedParser      parser,            int              nestingLevel)
+</tt></pre>
+    <p>
+    And its expression alignment is recursive, e.g.
+<pre><tt>
+            if ((psiExpressionList.getExpressions().length               &gt;  expressionListIndex &amp;&amp;
+                 psiExpressionList.getExpressions()[expressionListIndex] == child                 ) ||
+                (sawNoParameters                                         == false               &amp;&amp;
+                 expressionListIndex                                     &gt;                    0   )   )
+</tt></pre>
+    It is capable of reformatting "if" statements as follows:
+<pre><tt>
+        if (param1 == p3 &amp;&amp;
+            j      &gt;  5     ) p3 = 7;
+....
+        if      (param1 == p3) p3     = 6;
+        else if (param1 == 2 ) method1(param1, true, 3);
+        else                   param1 = 7;
+</tt></pre>
+    Method calls can be reformatted to align parentheses, commas, or parameters:
+<pre><tt>
+        align_params               = (ColumnSetting ) find(ALIGN_PARAMS              );
+        align_semicolon            = (ColumnSetting ) find(ALIGN_SEMICOLON           );
+        align_semicolon_with_comma = (BooleanSetting) find(ALIGN_SEMICOLON_WITH_COMMA);
+</tt></pre>
+    <p>
+    Typecast parentheses and types as well as many other expression components can also be aligned.
+    <p>
+    <h2><a name ="Using_the_Tabifier_plugin"> Using the Tabifier plugin </a></h2>
+    <p>
+    The plugin operates on selected lines of text.
+        Put the caret anywhere in the first line to be re-aligned and then select to anywhere in the last line to be re-aligned.
+        If no selection is made, the plugin selects the entire current line (or, optionally, selects the entire file);
+        otherwise the plugin extends the selection to the beginning of the first line and the end of the last line.
+    <p>
+    The plugin parses the entire Java file and reformats any construct it understands (within the selection).
+        Therefore it is safe to select as much text as you want, even the entire file.
+        The plugin operates much as the IDEA Code Layout tool does.
+    <p>
+    The plugin adds itself to the editor popup menu, and assigns itself a shortcut of Ctrl-Shift-Alt-T.
+    <p>
+    If the Reformat plugin is also installed, it will automatically invoke the tabifier after a code layout operation
+        (invoked by Ctrl-Alt-L or Ctrl-Alt-R), thus making the process of code layout and reformatting seamless.
+    <p>
+    <h2><a name ="Controlling_Alignment"> Controlling Alignment </a></h2>
+    <p>
+    Tabifier plugin settings are accessed via the "File->Settings->Other Settings->Tabifier" menu item.
+        You may force alignment of any or all of the following syntactic items:
+    <p>
+    <ul>
+        <li> annotations</li>
+        <li> modifiers (only applies to field or variable declarations)</li>
+        <li> variable type (only applies to field or variable declarations)</li>
+        <li> variable name (or left-hand side of assignment statement)</li>
+        <li> operator (usually "=", but may be a multicharacter operator like "+=")</li>
+        <li> right-hand expression (the initialization expression for fields and variables)</li>
+        <li> comma or semicolon</li>
+        <li> trailing comments</li>
+    </ul>
+    <p>
+    See the configuration panel, which now sports a handy Preview pane so you can see in advance what the alignment will look like.
+    <p>
+    For each of these, if alignment is to take place, you can specify how many spaces or tab characters are to be appended to the longest text
+        to reach the next alignment column (tab stop).
+        In the example above, all columns except comma/semicolon were aligned, and spacing was set for each to one space character.
+    <p>
+    If tab characters (instead of spaces) are specified, alignment takes place as if tab characters were appended to the longest previous column.
+        The editor setting (IDE Settings...Code Style...Indents and Braces) for tab size is used.
+    <p>
+    Whether tabs or spaces are actually emitted during reformatting depends on the project settings for "Use Tabs" and "Smart Tabs."
+        If "Use Tabs" is unchecked, all reformatting is done with spaces, even though the appearance is as if tab characters were used.
+        If "Use Tabs" is checked, tabs are used wherever possible, unless "Smart Tabs" is also checked,
+        in which case only the block indentation is achieved using tabs, and the remainder is done using spaces.
+    <p>
+    <h3><a name ="Modifier_Reordering_and_Alignmen"> Modifier Reordering and Alignment </a></h3>
+    <p>
+    If modifier reordering and alignment is specified, modifiers will be
+    reordered according to the Java spec recommendation (as implemented in the java.util.Modifier class) and aligned vertically.
+        Mutually exclusive modifiers, such as public/private/protected, occupy the same column.  For example,
+    <p>
+<pre><tt>
+static public final int CONSTANT = 0;
+private static int nextID = 0;
+</tt></pre>
+    <p>
+    would, with modifier reordering and alignment enabled, appear as:
+    <p>
+<pre><tt>
+public  static final int CONSTANT = 0;
+private static       int nextID = 0;
+</tt></pre>
+    <p>
+    If modifier reordering and alignment is disabled, modifiers remain intact.
+        In this case, and with variable types aligned, the example is reformatted as:
+    <p>
+<pre><tt>
+static public final int CONSTANT = 0;
+private static      int NextID = 0;
+</tt></pre>
+    <p>
+    No space/tab specification is permitted for modifiers since modifiers begin immediately at column zero
+        (relative to the indentation of the entire block, of course.)
+    <p>
+    <h2><a name ="Controlling_Grouping"> Controlling Grouping </a></h2>
+    <p>
+    When multiple lines of text are selected, the tabifier plugin groups them automatically for formatting based on indentation level.
+        For example,
+    <p>
+<pre><tt>
+    int i = 0;
+    while (i < 10)
+    {
+        int j = i;
+        ...
+    }
+</tt></pre>
+    <p>
+    the declarations of i and j are tabified independently.
+    <p>
+    Additional grouping rules are available.  Presence of the following may be specified to force a new formatting group:
+    <p>
+    <ul>
+        <li> blank lines
+        </li>
+        <li> non-blank lines other than declaration or assignment statements
+        </li>
+        <li> a change from declaration to assignment statements or vice versa
+        </li>
+        <li> <strong>Version 4.0</strong> methods whose names differ from each other within the first &lt;n&gt; characters
+        </li>
+    </ul>
+    <h3><a name ="Options_Not_Affecting_Appearance"> Options Not Affecting Appearance </a></h3>
+    <p>
+    <ul>
+        <li> Depending on the user's choice, if no selection has been made in the file,
+            either the entire file or only the line containing the cursor will be tabified.
+            Default is the latter.
+        </li>
+        <li> <strong>Version 3.0/4.0</strong> User can choose to apply Code Layout to the contents of the Preview pane before it is tabified,
+            thereby seeing the effect of the Reformat plugin (which runs code layout, then itself, then tabifier).
+            If statement then- and else- statements seem to be put on a new line regardless of settings at the moment,
+            making the 'if' alignment options less interesting.
+        </li>
+        <li> <strong>Version 3.0/4.0</strong> Enable or disable debug output.
+            In order for this to work, it appears you have to add the following to bin\log.xml:
+        </li>
+    </ul>
+<pre>
+&lt;category name="com.wrq.tabifier"&gt;
+   &lt;priority value="INFO"/&gt;
+   &lt;appender-ref ref="CONSOLE-DEBUG"/&gt;
+&lt;/category&gt;
+</tt></pre>
+    <p>
+    <p>
+    <h3><a name ="Requirements"> Requirements </a></h3>
+    This plugin works with all versions of IDEA.
+    <p>
+    <h3><a name ="Other_Information"> Other Information </a></h3>
+    The plugin source contains a JUnit test suite.
+    It makes use of the new testing framework provided by IntelliJ; see class LightPlatformCodeInsightTestCase.
+    This allows an instance of the IDE editor to be initialized with the contents of a file, and the results of tabifying those contents
+    can be easily compared with expected results.
+    <p>
+    <h3><a name ="Possible_Enhancements"> Possible Enhancements </a></h3>
+    <p>
+    Please also notify me of any bugs or other suggestions for improvement at <a href="https://java.net/projects/tabifier">the project home page</a>.  Thanks, and hope you enjoy the plugin!

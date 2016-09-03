@@ -1,0 +1,108 @@
+handle 
+
+  switch (s)
+  {
+    case a: <stmt>; break;
+    case b: <stmt>; break;
+  }
+
+alignment.  case is indented one level too far.  <stmt> should have space preceding.  break aligned.
+
+- alignment of 'new' in
+
+method(param1, new  Thing());
+method(param_2, new Thing());
+
+- do same for if and while statements (support alignment of trailing single line code block)
+
+- allow arbitrary text to be pasted into preview pane.
+   - options: different text for each option to illustrate its use
+   - load current editor contents
+
+- allow specification of indent level of nested expressions, not just 1 character, e.g.
+
+    if ((rects == null ||
+         rects.size() == 0)  &&
+        !extents.inBox(x, y)    )
+
+        middle line is indented one space from term above.
+
+- support progress bar
+- support multiple file tabify from project tree
+- test single line alignment in anonymous inner class (Rearranger popup entry, e.g.)
+- test single line alignment of successive while & if statements
+- align parameters of a method prototype, e.g.
+
+public interface X {
+    void FillSpans(Drawable pDrawable, GC pGC);
+    void SetSpans(Drawable pDrawable, GC pGC);
+    Region CopyArea(Drawable pSrc, Drawable pDst, GC pGC);
+}
+---
+Add support for array index expression alignments (see method testArrayIndexExpr).
+
+(i ==x) missing space after ==.
+
+public Object[]fn() missing space after [].
+
+-----
+http://www.intellij.net/forums/thread.jsp?forum=18&thread=108505&message=3382279#3382279
+
+Tabifier: Problems & Suggestions  Posted: Sep 10, 2004 12:46 AM
+  Reply
+
+First of all thanks for this great plugin.
+* It's single most important shortcoming is that is isn't part of Idea itself.
+Hey JetBrainers: Any negotiations with Dave started? This should really be part of core Idea 5!
+E.g. it would be nice to have the automatic "reformate before commit" tabify also, and when reformat on paste is enabled well - tabify, etc.
+And most importantly have the tabifier settings part of the code style, so that I can optionally store them in the project. It's just to complicated to tell for a team of workers to agree on tabifier settings and have them all configure the plugin exactly the same.
+
+* Here is a bug I noticed in Tabifier 5.0:
+I have all method declaration parameter alignment switched OFF, but alignment for field and variable declarations on.
+Still this is what I get for a multiline method header:
+
+    public XGridLayout(int        rowCount, int           columnCount, int xGap, int yGap,
+                       XAlignment groupXAlign, YAlignment groupYAlign) {
+
+
+
+* Another bug is only minor, yet annoying:
+With Idea default reformat I get
+
+            int columnCount = (this.columnCount != 0
+                              ? this.columnCount : (componentCount + this.rowCount - 1) / this.rowCount);
+
+
+after using tabifier:
+
+            int    columnCount    = (this.columnCount != 0
+                     ? this.columnCount : (componentCount + this.rowCount - 1) / this.rowCount);
+
+
+In this case tabifier actually breaks an alignment that was there before. But maybe I am missing some options.
+Note that my code wrap border is set to 120 characters, so there would be enough room to keep the second line aligned to the initializer part.
+
+* Special options for comments
+And sure enough, even with all those fine grained options, I still need another setting:
+Optionally do not let the grouping be interrupted by javadoc comments. I want to have multiple field declarations aligned, but the javadoc breaks the grouping. Currently the only way to do this is to set the general option to not break the grouping by any non-tabifiable statement - but that's just too much.
+
+Hm, maybe have two options: One for javadoc comment and one for regular comments?!
+
+
+
+ Re: Tabifier: Problems & Suggestions  Posted: Sep 10, 2004 12:48 AM
+  Reply
+
+Posted By: Stephen Kelvin    Posts: 966 / From: Hamburg, Germany / Registered: Aug, 2002
+Note that in this idea formatted code above the second line should start right below the initializer part of the first line. Some how the formatting was changed?!
+
+int columnCount = (this.columnCount != 0
+                  ? this.columnCount : (componentCount + this.rowCount - 1) / this.rowCount);
+
+
+Download history:
+
+As of 8/21/2008 (new version 5.4 uploaded), 10,434 downloads
+As of 5/ 3/2010 (new version 5.7 uploaded), 13,127 downloads
+As of 6/ 5/2011 (new version 5.8 uploaded), 15,052 downloads
+As of 4/20/2015 (new version 5.9 uploaded), 18,365 downloads

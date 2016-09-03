@@ -1,0 +1,2 @@
+Java EE: Java Server Faces
+com.intellij.javaee

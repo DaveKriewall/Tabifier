@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="">
+    <module2copyright>
+      <element module="source (excludes test and data)" copyright="simplified BSD license" />
+    </module2copyright>
+  </settings>
+</component>

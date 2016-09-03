@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_tabifier" default="compile.module.tabifier">
+  <dirname property="module.tabifier.basedir" file="${ant.file.module_tabifier}"/>
+  
+  <property name="module.jdk.home.tabifier" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.tabifier" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.tabifier" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.tabifier" value="${compiler.args}"/>
+  
+  <property name="tabifier.output.dir" value="${module.tabifier.basedir}/out/production/Tabifier"/>
+  <property name="tabifier.testoutput.dir" value="${module.tabifier.basedir}/out/test/Tabifier"/>
+  
+  <path id="tabifier.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tabifier.module.classpath">
+    <path refid="${module.jdk.classpath.tabifier}"/>
+    <pathelement location="C:/IDEA9/community/lib/junit.jar"/>
+  </path>
+  
+  <path id="tabifier.runtime.module.classpath">
+    <pathelement location="${tabifier.output.dir}"/>
+    <pathelement location="${tabifier.testoutput.dir}"/>
+    <pathelement location="C:/IDEA9/community/lib/junit.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tabifier">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tabifier">
+    <patternset refid="excluded.from.module.tabifier"/>
+  </patternset>
+  
+  <path id="tabifier.module.sourcepath">
+    <dirset dir="${module.tabifier.basedir}">
+      <include name="src"/>
+      <include name="test/src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tabifier" depends="compile.module.tabifier.production,compile.module.tabifier.tests" description="Compile module Tabifier"/>
+  
+  <target name="compile.module.tabifier.production" description="Compile module Tabifier; production classes">
+    <mkdir dir="${tabifier.output.dir}"/>
+    <javac destdir="${tabifier.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tabifier}/javac">
+      <compilerarg line="${compiler.args.tabifier}"/>
+      <bootclasspath refid="tabifier.module.bootclasspath"/>
+      <classpath refid="tabifier.module.classpath"/>
+      <src refid="tabifier.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tabifier"/>
+    </javac>
+    
+    <copy todir="${tabifier.output.dir}">
+      <fileset dir="${module.tabifier.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.tabifier.basedir}/test/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tabifier.tests" depends="compile.module.tabifier.production" description="compile module Tabifier; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tabifier" description="cleanup module">
+    <delete dir="${tabifier.output.dir}"/>
+    <delete dir="${tabifier.testoutput.dir}"/>
+  </target>
+  
+  <property name="tabifier.plugin.path.jar" value="${module.tabifier.basedir}/Tabifier.zip"/>
+  
+  <!-- Build archive for plugin 'Tabifier' -->
+  <target name="plugin.build.jar.tabifier" depends="compile.module.tabifier" description="Build plugin archive for module &apos;Tabifier&apos;">
+    <property name="tmp.dir.tabifier" value="C:/temp"/>
+    <mkdir dir="${tmp.dir.tabifier}"/>
+    <mkdir dir="${tmp.dir.tabifier}/lib"/>
+    <jar destfile="${tmp.dir.tabifier}/lib/Tabifier.jar" duplicate="preserve">
+      <zipfileset dir="${module.tabifier.basedir}/out/production/Tabifier"/>
+      <zipfileset file="${module.tabifier.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <zipfileset dir="${module.tabifier.basedir}/data" prefix="data"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+    <copy file="C:/IDEA9/community/lib/junit.jar" tofile="${tmp.dir.tabifier}/lib/junit.jar"/>
+    <zip destfile="${tabifier.plugin.path.jar}">
+      <fileset dir="C:/temp"/>
+    </zip>
+    <delete dir="${tmp.dir.tabifier}"/>
+  </target>
+</project>

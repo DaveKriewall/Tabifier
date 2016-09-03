@@ -1,0 +1,110 @@
+<idea-plugin url="http://www.intellij.org/twiki/bin/view/Main/TabifierPlugin">
+	<!-- plugin name -->
+	<name>Tabifier</name>
+
+	<!-- description -->
+	<description>
+        The tabifier plugin retabs Java code so that syntactic elements are aligned vertically.
+        Extensive control over alignment is provided.
+        Please visit http://www.intellij.org/twiki/bin/view/Main/TabifierPlugin for examples (they
+        can't be shown here, sorry -- something is stripping the html tags necessary to prevent the
+        browser from reformatting the examples).
+<br/>
+        For example, I like to align variable declarations and assignment statements like this:
+<pre>
+                   int          v1;                  // loop variable
+                   String       s2;                  // second string
+    public  static PrintWriter  p;
+    private static boolean      debugging    = true; // initialize
+    private static OutputStream outputstream = null;
+
+    outputstream = new FileOutputStream(f, true);
+    p            = new DebuggingPrintWriter(outputstream, true);
+</pre>
+IDEA likes to format them with single spaces separating the syntactic elements, like this:
+<pre>
+    int v1; // loop variable
+    String s2; // second string
+    public static PrintWriter p;
+    private static boolean debugging = true; // initialize
+    private static OutputStream outputstream = null;
+
+    outputstream = new FileOutputStream(f, true);
+    p = new DebuggingPrintWriter(outputstream, true);
+</pre>
+The tabifier plugin automatically reformats the text into the first version, or any variation of it you choose.
+<br/>
+The Tabifier is able to right justify integer literals, e.g.
+<pre>
+    public static final int ONE    =  1;
+    public static final int TWO    =  2;
+    public static final int TEN    = 10;
+    public static final int ELEVEN = 11;
+</pre>
+It can align method declaration and method call parameters, even with multiple parameters per line:
+<pre>
+    public ExpressionListParser(TokenColumn       openParend,
+                                ColumnChoice      params,
+                                TokenColumn       closeParend,
+                                CodeStyleSettings codeStyleSettings, TabifierSettings settings,
+                                NestedParser      parser,            int              nestingLevel)
+</pre>
+And its expression alignment is recursive, e.g.
+<pre>
+            if ((psiExpressionList.getExpressions().length               >  expressionListIndex &amp;&amp;
+                 psiExpressionList.getExpressions()[expressionListIndex] == child                 ) ||
+                (sawNoParameters                                         == false               &amp;&amp;
+                 expressionListIndex                                     >                    0   )   )
+</pre>
+It is capable of reformatting "if" statements as follows:
+<pre>
+        if (param1 == p3 &amp;&amp;
+            j      >  5     ) p3 = 7;
+....
+        if      (param1 == p3) p3     = 6;
+        else if (param1 == 2 ) method1(param1, true, 3);
+        else                   param1 = 7;
+</pre>
+Method calls can be reformatted to align parentheses, commas, or parameters:
+<pre>
+        align_params                    = (ColumnSetting ) find(ALIGN_PARAMS              );
+        align_semicolon                 = (ColumnSetting ) find(ALIGN_SEMICOLON           );
+        align_semicolon_with_comma      = (BooleanSetting) find(ALIGN_SEMICOLON_WITH_COMMA);
+</pre>
+Typecast parentheses and types as well as many other expression components can also be aligned.
+</description>
+    <change-notes>
+        1). Recompiled for IDEA 8.0/8.1 with Java 1.5 class (not Java 6) format.
+    </change-notes>
+	<!-- plugin version: ALSO CHANGE CONSTANT IN tabifier.java -->
+	<version>5.5</version>
+	<vendor email="Dave.Kriewall@attachmate.com" url="">Dave Kriewall</vendor>
+
+	<!-- minimum and maximum IDEA version plugin is supposed to work with -->
+	<idea-version min="8.0" max="9.5" since-build="8664"/>
+
+<!-- old project def..
+	<!.. project components of the plugin ..>
+	<project-components>
+		<component>
+			<implementation-class>com.wrq.tabifier.tabifier</implementation-class>
+			<interface-class>com.wrq.tabifier.tabifier</interface-class>
+		</component>
+	</project-components>
+-->
+<application-components>
+   <component>
+      <implementation-class>com.wrq.tabifier.tabifier</implementation-class>
+   </component>
+</application-components>
+	<!-- Component's actions -->
+	<actions>
+		<action id="Tabifier" class="com.wrq.tabifier.tabifier_action" text="Tabifier"
+            description="Retab Java code so that syntactic elements are aligned vertically.">
+			<keyboard-shortcut first-keystroke="control alt shift T" keymap="$default"/>
+			<add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditMenu" anchor="last"/>
+		</action>
+	</actions>
+
+</idea-plugin>

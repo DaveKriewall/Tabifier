@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="source (excludes test and data)" pattern="file[Tabifier]:src//*.java" />
+</component>

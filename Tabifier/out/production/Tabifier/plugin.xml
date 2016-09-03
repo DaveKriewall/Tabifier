@@ -1,0 +1,118 @@
+<idea-plugin version="2" url="http://java.net/projects/tabifier">
+	<!-- plugin name -->
+	<name>Tabifier</name>
+
+	<!-- description -->
+	<description>
+        The tabifier plugin retabs Java code so that syntactic elements are aligned vertically.
+        Extensive, configurable control over alignment is provided. [Note: the following examples are aligned
+        correctly when viewed within IDEA's plugin manager, but are misaligned when viewed on the JetBrains plugin repository page due to the use
+        of a non-fixed font.]
+        &lt;p/&gt;
+        For example, I like to align variable declarations and assignment statements like this:
+        &lt;pre&gt;&lt;tt&gt;
+               int          v1;                  // loop variable
+               String       s2;                  // second string
+public  static PrintWriter  p;
+private static boolean      debugging    = true; // initialize
+private static OutputStream outputstream = null;
+
+outputstream = new FileOutputStream(f, true);
+p            = new DebuggingPrintWriter(outputstream, true);
+        &lt;/tt&gt;&lt;/pre&gt;
+        IDEA likes to format them with single spaces separating the syntactic elements, like this:
+        &lt;pre&gt;&lt;tt&gt;
+int v1; // loop variable
+String s2; // second string
+public static PrintWriter p;
+private static boolean debugging = true; // initialize
+private static OutputStream outputstream = null;
+
+outputstream = new FileOutputStream(f, true);
+p = new DebuggingPrintWriter(outputstream, true);
+        &lt;/tt&gt;&lt;/pre&gt;
+        The tabifier plugin automatically reformats the text into the first version, or any variation of it you choose.
+        &lt;p/&gt;
+        The Tabifier is able to right justify integer literals, e.g.
+        &lt;pre&gt;&lt;tt&gt;
+public static final int ONE    =  1;
+public static final int TWO    =  2;
+public static final int TEN    = 10;
+public static final int ELEVEN = 11;
+        &lt;/tt&gt;&lt;/pre&gt;
+        It can align method declaration and method call parameters, even with multiple parameters per line:
+        &lt;pre&gt;&lt;tt&gt;
+public ExpressionListParser(TokenColumn       openParend,
+                            ColumnChoice      params,
+                            TokenColumn       closeParend,
+                            CodeStyleSettings codeStyleSettings, TabifierSettings settings,
+                            NestedParser      parser,            int              nestingLevel)
+        &lt;/tt&gt;&lt;/pre&gt;
+        And its expression alignment is recursive, e.g.
+        &lt;pre&gt;&lt;tt&gt;
+if ((psiExpressionList.getExpressions().length               &gt;  expressionListIndex &amp;&amp;
+     psiExpressionList.getExpressions()[expressionListIndex] == child                 ) ||
+    (sawNoParameters                                         == false               &amp;&amp;
+     expressionListIndex                                     &gt;                    0   )   )
+        &lt;/tt&gt;&lt;/pre&gt;
+        It is capable of reformatting "if" statements as follows:
+        &lt;pre&gt;&lt;tt&gt;
+if (param1 == p3 &amp;&amp;
+    j      &gt;  5     ) p3 = 7;
+....
+if      (param1 == p3) p3     = 6;
+else if (param1 == 2 ) method1(param1, true, 3);
+else                   param1 = 7;
+        &lt;/tt&gt;&lt;/pre&gt;
+        Method calls can be reformatted to align parentheses, commas, or parameters:
+        &lt;pre&gt;&lt;tt&gt;
+align_params                    = (ColumnSetting ) find(ALIGN_PARAMS              );
+align_semicolon                 = (ColumnSetting ) find(ALIGN_SEMICOLON           );
+align_semicolon_with_comma      = (BooleanSetting) find(ALIGN_SEMICOLON_WITH_COMMA);
+        &lt;/tt&gt;&lt;/pre&gt;
+        Typecast parentheses and types as well as many other expression components can also be aligned.
+</description>
+    <change-notes>
+&lt;ol&gt;
+&lt;li&gt;Fixed polyadic expression (a + b + c + ..) alignment problems.&lt;/li&gt;
+&lt;li&gt;Fixed problem where a modifier ("public") following an annotation with parameters ("@ANN(value="x")public") with no intervening
+   spaces could be dropped.&lt;/li&gt;
+&lt;li&gt;Allow "final" and "volatile" modifiers to occupy the same column (unless "transient" is present.)&lt;/li&gt;
+&lt;li&gt;Tabifier UI can now be displayed in IDEA 14 without hanging the IDE.&lt;/li&gt;
+&lt;li&gt;Changed keyboard shortcut keystroke from Ctrl+Alt+Shift+T to Ctrl+Alt+Shift+Y (think "tabifY");
+    the former is used by IDEA as a shortcut for "Refactor This."&lt;/li&gt;
+&lt;li&gt;(Version 5.9.1) Fixed problem when a binary expression followed a polyadic expression.&lt;/li&gt;
+&lt;/ol&gt;
+    </change-notes>
+	<!-- plugin version: ALSO CHANGE CONSTANT IN tabifier.java -->
+	<version>5.9.1</version>
+	<vendor email="dave.kriewall at gmail.com" url="">Dave Kriewall</vendor>
+
+	<!-- minimum and maximum IDEA version plugin is supposed to work with -->
+	<idea-version since-build="107.105"/>
+
+<!-- old project def..
+	<!.. project components of the plugin ..>
+	<project-components>
+		<component>
+			<implementation-class>com.wrq.tabifier.tabifier</implementation-class>
+			<interface-class>com.wrq.tabifier.tabifier</interface-class>
+		</component>
+	</project-components>
+-->
+<application-components>
+   <component>
+      <implementation-class>com.wrq.tabifier.tabifier</implementation-class>
+   </component>
+</application-components>
+	<!-- Component's actions -->
+	<actions>
+		<action id="Tabifier" class="com.wrq.tabifier.tabifier_action" text="Tabifier"
+            description="Retab Java code so that syntactic elements are aligned vertically.">
+			<keyboard-shortcut first-keystroke="control alt shift Y" keymap="$default"/>
+			<add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditMenu" anchor="last"/>
+		</action>
+	</actions>
+
+</idea-plugin>

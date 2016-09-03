@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="tabifier:jar">
+    <output-path>$PROJECT_DIR$/lib</output-path>
+    <root id="root">
+      <element id="archive" name="tabifier.jar">
+        <element id="directory" name="data">
+          <element id="dir-copy" path="$PROJECT_DIR$/data" />
+        </element>
+        <element id="directory" name="META-INF">
+          <element id="dir-copy" path="$PROJECT_DIR$/META-INF" />
+        </element>
+        <element id="module-output" name="Tabifier" />
+      </element>
+    </root>
+  </artifact>
+</component>

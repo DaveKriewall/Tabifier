@@ -1,0 +1,27 @@
+before parentheses:
+  method call*
+  method decl*
+  if*, while*, for, catch, switch, synchronized
+
+around operators:
+  assignment*, logical*, equality*, relational*,
+  bitwise*, additive*, multiplicative*, shift*
+
+before left brace:
+  class*, method*, if*, else, while*, for, do,
+  switch, try, catch, finally, synchronized
+
+within parentheses:
+  parentheses
+  method call*
+  method decl*
+  if*, while*, for, catch, switch, synchronized
+  type cast
+
+other:
+  within brackets
+  after comma*
+  before comma*
+  after semicolon*
+  before semicolon*
+  after type cast*
